@@ -104,6 +104,10 @@ class UUIDField(Field):
         """
         if isinstance(value, uuid.UUID):
             return str(value)
+
+        if not value:
+            return None
+
         return value
 
     def value_to_string(self, obj):
