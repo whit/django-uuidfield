@@ -2,7 +2,13 @@ import uuid
 
 from django import forms
 from django.db.models import Field, SubfieldBase
-from django.utils.encoding import smart_unicode
+
+from django.utils.six import PY3
+
+if PY3:
+    from django.utils.encoding import smart_text
+else:
+    from django.utils.encoding import smart_unicode as smart_text
 
 try:
     # psycopg2 needs us to register the uuid type
@@ -98,6 +104,10 @@ class UUIDField(Field):
         """
         if isinstance(value, uuid.UUID):
             return str(value)
+
+        if not value:
+            return None
+
         return value
 
     def value_to_string(self, obj):
@@ -119,7 +129,7 @@ class UUIDField(Field):
             return None
         # attempt to parse a UUID including cases in which value is a UUID
         # instance already to be able to get our StringUUID in.
-        return StringUUID(smart_unicode(value))
+        return StringUUID(smart_text(value))
 
     def formfield(self, **kwargs):
         defaults = {
