@@ -115,7 +115,7 @@ class UUIDField(Field):
         if val is None:
             data = ''
         else:
-            data = unicode(val)
+            data = smart_text(val)
         return data
 
     def to_python(self, value):
